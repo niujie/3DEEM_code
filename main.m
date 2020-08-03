@@ -16,14 +16,8 @@ filename = [file_path, '311.TXT'];
 % Data Points
 file_info = read_3DEEM_file(filename);
 
-% 提取激发波段
-ex_band = file_info.Data_Points(1, :);
-% 去除NaN
-ex_band(isnan(ex_band)) = [];
-
-% 提取发射波段
-em_band = file_info.Data_Points(2:end, 1);
-em_band = em_band';     % 转置
-
-% 提取波谱数据
-spec_data = file_info.Data_Points(2:end, 2:end);
+% 2. 从Data Points数组提取数据
+%   ex_band = 激发波段
+%   em_band = 发射波段
+% spec_band = 波谱数据
+[ex_band, em_band, spec_data] = get_data_points(file_info.Data_Points);
