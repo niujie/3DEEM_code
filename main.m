@@ -21,3 +21,7 @@ file_info = read_3DEEM_file(filename);
 %   em_band = 发射波段
 % spec_band = 波谱数据
 [ex_band, em_band, spec_data] = get_data_points(file_info.Data_Points);
+
+% 3. 绘制光谱图
+scale = 10;     % 插值精度，默认为1，即不插值
+draw_spectrum(ex_band, em_band, spec_data, scale)
