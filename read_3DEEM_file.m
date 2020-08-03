@@ -1,7 +1,7 @@
-function data_struct = read_3DEEM_file(filename)
+function file_info = read_3DEEM_file(filename)
 % 函数用于读取3D荧光谱数据文件
 % 输入：filename = 文件名
-% 输出：data_struct = 包含整个文件中数据的数据结构
+% 输出：file_info = 包含整个文件中数据的数据结构
 [fid, errmsg] = fopen(filename);
 % 文件不存在，报错，结束
 if fid < 0
@@ -13,7 +13,7 @@ end
 % File name
 % ... ...
 % 等信息
-data_struct = struct();
+file_info = struct();
 % 按行读取文件，直到光谱矩阵数据之前
 line = [];
 sub_field = false;  % 是否为子结构
@@ -52,10 +52,10 @@ while ~feof(fid)
             ApexEM(n, 1) = A(3);
             Height(n, 1) = A(4);
         end
-        data_struct.Peaks = struct();
-        data_struct.Peaks.ApexEX = ApexEX;
-        data_struct.Peaks.ApexEM = ApexEM;
-        data_struct.Peaks.Height = Height;
+        file_info.Peaks = struct();
+        file_info.Peaks.ApexEX = ApexEX;
+        file_info.Peaks.ApexEM = ApexEM;
+        file_info.Peaks.Height = Height;
         continue
     end
     
@@ -78,7 +78,7 @@ while ~feof(fid)
             data = sscanf(line, '%f')';   % 将列向量转置
             data_pts(n, :) = sscanf(line, '%f')';
         end
-        data_struct.Data_Points = data_pts;
+        file_info.Data_Points = data_pts;
         continue
     end
     
@@ -87,7 +87,7 @@ while ~feof(fid)
     if isempty(k)
         % 子结构
         sub_field = true;
-        struct_name = ['data_struct.', line];
+        struct_name = ['file_info.', line];
         % 将空格替换为'_'
         struct_name = strrep(struct_name, ' ', '_');
         eval([struct_name, ' = struct();']);
@@ -107,7 +107,7 @@ while ~feof(fid)
             % 如果是子结构
             eval([struct_name, '.', field_name, ' = info;']);
         else
-            eval(['data_struct.', field_name, ' = info;']);
+            eval(['file_info.', field_name, ' = info;']);
         end
     else
         % 处理空内容
@@ -115,7 +115,7 @@ while ~feof(fid)
             % 子字段
             eval([struct_name, '.', field_name, ' = [];']);
         else
-            eval(['data_struct.', field_name, ' = [];']);
+            eval(['file_info.', field_name, ' = [];']);
         end
     end
     
