@@ -1,4 +1,4 @@
-function [] = draw_spectrum(ex_band, em_band, spec_data, scale)
+function [] = draw_3D_spectrum(ex_band, em_band, spec_data, scale)
 % 函数绘制光谱图
 % 输入：  ex_band = 激发波段
 %        em_band = 发射波段
