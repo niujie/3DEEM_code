@@ -1,29 +1,29 @@
-% Ö÷³ÌĞò
+% ä¸»ç¨‹åº
 clear
 clc
-% 1. ĞŞ¸ÄÒÔÏÂÎÄ¼şÂ·¾¶¼°Òª´ò¿ªµÄÎÄ¼şÃû£¨×îºÃÊ¹ÓÃÈ«Â·¾¶£©
-% ÎÄ¼şÂ·¾¶
-% file_path = 'C:\Users\jay_n\Documents\Ñ§Éú\¹¶‚ÆîÚ\interval10\non-toxic\Chlorophyta\P.subcordiformis\';
+% 1. ä¿®æ”¹ä»¥ä¸‹æ–‡ä»¶è·¯å¾„åŠè¦æ‰“å¼€çš„æ–‡ä»¶åï¼ˆæœ€å¥½ä½¿ç”¨å…¨è·¯å¾„ï¼‰
+% æ–‡ä»¶è·¯å¾„
+% file_path = 'C:\Users\jay_n\Documents\å­¦ç”Ÿ\è‹Ÿå²é’°\interval10\non-toxic\Chlorophyta\P.subcordiformis\';
 % filename = [file_path, 'PS2.TXT'];
-file_path = 'C:\Users\jay_n\Documents\Ñ§Éú\²Ü½àÈã\¹âÕÕ60\14-4-15\';
+file_path = 'C:\Users\jay_n\Documents\å­¦ç”Ÿ\æ›¹æ´èŒ¹\å…‰ç…§60\14-4-15\';
 filename = [file_path, '311.TXT'];
 
-% ½á¹¹Ìå±äÁ¿£¬ÓÃÓÚ´æ´¢ÎÄ¼şÖĞµÄÊı¾İ
-% °üÀ¨
+% ç»“æ„ä½“å˜é‡ï¼Œç”¨äºå­˜å‚¨æ–‡ä»¶ä¸­çš„æ•°æ®
+% åŒ…æ‹¬
 % Sample
 % File name
 % ... ...
 % Data Points
 file_info = read_3DEEM_file(filename);
 
-% ÌáÈ¡¼¤·¢²¨¶Î
+% æå–æ¿€å‘æ³¢æ®µ
 ex_band = file_info.Data_Points(1, :);
-% È¥³ıNaN
+% å»é™¤NaN
 ex_band(isnan(ex_band)) = [];
 
-% ÌáÈ¡·¢Éä²¨¶Î
+% æå–å‘å°„æ³¢æ®µ
 em_band = file_info.Data_Points(2:end, 1);
-em_band = em_band';     % ×ªÖÃ
+em_band = em_band';     % è½¬ç½®
 
-% ÌáÈ¡²¨Æ×Êı¾İ
+% æå–æ³¢è°±æ•°æ®
 spec_data = file_info.Data_Points(2:end, 2:end);
