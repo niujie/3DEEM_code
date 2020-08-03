@@ -17,7 +17,7 @@ data_struct = struct();
 % 按行读取文件，直到光谱矩阵数据之前
 line = [];
 sub_field = false;  % 是否为子结构
-while ~strcmpi(line, 'Data Points') && ~strcmpi(line, 'Peaks')
+while ~feof(fid)
     line = fgetl(fid);
     % 删除前后空格
     line = strtrim(line);
@@ -26,6 +26,62 @@ while ~strcmpi(line, 'Data Points') && ~strcmpi(line, 'Peaks')
         sub_field = false;  % 空行表示一个子字段结构结束
         continue
     end
+    
+    % 处理Peaks数据
+    if strcmpi(line, 'Peaks')
+        ApexEX = [];
+        ApexEM = [];
+        Height = [];
+        n = 0;    % 数据个数
+        % 去掉该行 ‘No.	ApexEX/EM(nm)	Height(Data)’
+        fgetl(fid);
+        while true
+            n = n + 1;
+            line = fgetl(fid);
+            if line == -1
+                % 文件为空或者读到文件尾巴
+                break
+            end
+            % 直到读到空行或者Data Points字段
+            if isempty(line) || strcmpi(line, 'Data Points')
+                break
+            end
+            line = strtrim(line);
+            [A, ~, ~] = sscanf(line, '%d %f / %f %f');
+            ApexEX(n, 1) = A(2);
+            ApexEM(n, 1) = A(3);
+            Height(n, 1) = A(4);
+        end
+        data_struct.Peaks = struct();
+        data_struct.Peaks.ApexEX = ApexEX;
+        data_struct.Peaks.ApexEM = ApexEM;
+        data_struct.Peaks.Height = Height;
+        continue
+    end
+    
+    % 处理Data Points数据
+    if strcmpi(line, 'Data Points')
+        data_pts = [];
+        % 处理第一行，激发谱波段值
+        n = 1;
+        line = fgetl(fid);
+        data = sscanf(line, '%f')';     % 列向量转置
+        data_pts(n, :) = [NaN, data];
+        % 读到文件尾或者空行停止
+        while ~feof(fid) || ~isempty(line)
+            line = fgetl(fid);
+            if line == -1
+                % 文件为空或者读到文件尾巴
+                break
+            end
+            n = n + 1;
+            data = sscanf(line, '%f')';   % 将列向量转置
+            data_pts(n, :) = sscanf(line, '%f')';
+        end
+        data_struct.Data_Points = data_pts;
+        continue
+    end
+    
     k = strfind(line, ':');
     % 跳过非字段信息
     if isempty(k)
@@ -62,34 +118,8 @@ while ~strcmpi(line, 'Data Points') && ~strcmpi(line, 'Peaks')
             eval(['data_struct.', field_name, ' = [];']);
         end
     end
+    
 end
-
-% 处理Peaks数据
-ApexEX = [];
-ApexEM = [];
-Height = [];
-n = 0;    % 数据个数
-if strcmp(line, 'Peaks')
-    % 去掉该行 ‘No.	ApexEX/EM(nm)	Height(Data)’
-    fgetl(fid);
-    while true
-        n = n + 1;
-        line = fgetl(fid);
-        % 直到读到空行或者Data Points字段
-        if isempty(line) || strcmpi(line, 'Data Points')
-            break
-        end
-        line = strtrim(line);
-        [A, ~, ~] = sscanf(line, '%d %f / %f %f');
-        ApexEX(n, 1) = A(2);
-        ApexEM(n, 1) = A(3);
-        Height(n, 1) = A(4);
-    end
-end
-data_struct.Peaks = struct();
-data_struct.Peaks.ApexEX = ApexEX;
-data_struct.Peaks.ApexEM = ApexEM;
-data_struct.Peaks.Height = Height;
 
 % 关闭文件
 fclose(fid);
