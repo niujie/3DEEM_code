@@ -1,48 +1,48 @@
 function file_info = read_3DEEM_file(filename)
-% 函数用于读取3D荧光谱数据文件
-% 输入：filename = 文件名
-% 输出：file_info = 包含整个文件中数据的数据结构
+% �������ڶ�ȡ3Dӫ���������ļ�
+% ���룺filename = �ļ���
+% �����file_info = ���������ļ������ݵ����ݽṹ
 [fid, errmsg] = fopen(filename);
-% 文件不存在，报错，结束
+% �ļ������ڣ�����������
 if fid < 0
     error(errmsg)
 end
-% 空的结构体，用于存储文件中的数据
-% 包括
+% �յĽṹ�壬���ڴ洢�ļ��е�����
+% ����
 % Sample
 % File name
 % ... ...
-% 等信息
+% ����Ϣ
 file_info = struct();
-% 按行读取文件，直到光谱矩阵数据之前
+% ���ж�ȡ�ļ���ֱ�����׾�������֮ǰ
 line = [];
-sub_field = false;  % 是否为子结构
+sub_field = false;  % �Ƿ�Ϊ�ӽṹ
 while ~feof(fid)
     line = fgetl(fid);
-    % 删除前后空格
+    % ɾ��ǰ��ո�
     line = strtrim(line);
-    % 跳过空行
+    % ��������
     if isempty(line)
-        sub_field = false;  % 空行表示一个子字段结构结束
+        sub_field = false;  % ���б�ʾһ�����ֶνṹ����
         continue
     end
     
-    % 处理Peaks数据
+    % ����Peaks����
     if strcmpi(line, 'Peaks')
         ApexEX = [];
         ApexEM = [];
         Height = [];
-        n = 0;    % 数据个数
-        % 去掉该行 ‘No.	ApexEX/EM(nm)	Height(Data)’
+        n = 0;    % ���ݸ���
+        % ȥ������ ��No.	ApexEX/EM(nm)	Height(Data)��
         fgetl(fid);
         while true
             n = n + 1;
             line = fgetl(fid);
             if line == -1
-                % 文件为空或者读到文件尾巴
+                % �ļ�Ϊ�ջ��߶����ļ�β��
                 break
             end
-            % 直到读到空行或者Data Points字段
+            % ֱ���������л���Data Points�ֶ�
             if isempty(line) || strcmpi(line, 'Data Points')
                 break
             end
@@ -59,23 +59,23 @@ while ~feof(fid)
         continue
     end
     
-    % 处理Data Points数据
+    % ����Data Points����
     if strcmpi(line, 'Data Points')
         data_pts = [];
-        % 处理第一行，激发谱波段值
+        % ������һ�У������ײ���ֵ
         n = 1;
         line = fgetl(fid);
-        data = sscanf(line, '%f')';     % 列向量转置
+        data = sscanf(line, '%f')';     % ������ת��
         data_pts(n, :) = [NaN, data];
-        % 读到文件尾或者空行停止
+        % �����ļ�β���߿���ֹͣ
         while ~feof(fid) || ~isempty(line)
             line = fgetl(fid);
             if line == -1
-                % 文件为空或者读到文件尾巴
+                % �ļ�Ϊ�ջ��߶����ļ�β��
                 break
             end
             n = n + 1;
-            data = sscanf(line, '%f')';   % 将列向量转置
+            data = sscanf(line, '%f')';   % ��������ת��
             data_pts(n, :) = sscanf(line, '%f')';
         end
         file_info.Data_Points = data_pts;
@@ -83,36 +83,36 @@ while ~feof(fid)
     end
     
     k = strfind(line, ':');
-    % 跳过非字段信息
+    % �������ֶ���Ϣ
     if isempty(k)
-        % 子结构
+        % �ӽṹ
         sub_field = true;
         struct_name = ['file_info.', line];
-        % 将空格替换为'_'
+        % ���ո��滻Ϊ'_'
         struct_name = strrep(struct_name, ' ', '_');
         eval([struct_name, ' = struct();']);
         continue
     end
-    % 字段名
+    % �ֶ���
     field_name = line(1:k-1);
-    % 将空格替换为'_'
+    % ���ո��滻Ϊ'_'
     field_name = strrep(field_name, ' ', '_');
-    % 字段内容
+    % �ֶ�����
     info = line(k+1:end);
-    % 删除前后空格
+    % ɾ��ǰ��ո�
     info = strtrim(info);
-    % 将字段名和信息添加进data_struct
+    % ���ֶ�������Ϣ���ӽ�data_struct
     if ~isempty(info)
         if sub_field
-            % 如果是子结构
+            % ������ӽṹ
             eval([struct_name, '.', field_name, ' = info;']);
         else
             eval(['file_info.', field_name, ' = info;']);
         end
     else
-        % 处理空内容
+        % ����������
         if sub_field
-            % 子字段
+            % ���ֶ�
             eval([struct_name, '.', field_name, ' = [];']);
         else
             eval(['file_info.', field_name, ' = [];']);
@@ -121,7 +121,7 @@ while ~feof(fid)
     
 end
 
-% 关闭文件
+% �ر��ļ�
 fclose(fid);
 
 end

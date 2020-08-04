@@ -1,48 +1,48 @@
 function [] = draw_3D_spectrum(ex_band, em_band, spec_data, scale)
-% å‡½æ•°ç»˜åˆ¶å…‰è°±å›¾
-% è¾“å…¥ï¼š  ex_band = æ¿€å‘æ³¢æ®µ
-%        em_band = å‘å°„æ³¢æ®µ
-%      spec_band = æ³¢è°±æ•°æ®
-%          scale = æ’å€¼ç²¾åº¦ï¼Œé»˜è®¤ä¸º1ï¼Œå³ä¸æ’å€¼
+% º¯Êı»æÖÆ¹âÆ×Í¼
+% ÊäÈë£º  ex_band = ¼¤·¢²¨¶Î
+%        em_band = ·¢Éä²¨¶Î
+%      spec_band = ²¨Æ×Êı¾İ
+%          scale = ²åÖµ¾«¶È£¬Ä¬ÈÏÎª1£¬¼´²»²åÖµ
 
 if nargin < 4
-    % å¦‚æœæœªæŒ‡å®šï¼Œåˆ™é»˜è®¤ä¸º1
+    % Èç¹ûÎ´Ö¸¶¨£¬ÔòÄ¬ÈÏÎª1
     scale = 1;
 end
 
-d_ex = ex_band(2) - ex_band(1);     % EXæ³¢æ®µé—´éš”                    
-d_em = em_band(2) - em_band(1);     % EMæ³¢æ®µé—´éš”
-ex_intp = min(ex_band) : d_ex/scale : max(ex_band);     % EXæ³¢æ®µæ’å€¼
-em_intp = min(em_band) : d_em/scale : max(em_band);     % EMæ³¢æ®µæ’å€¼
+d_ex = ex_band(2) - ex_band(1);     % EX²¨¶Î¼ä¸ô                    
+d_em = em_band(2) - em_band(1);     % EM²¨¶Î¼ä¸ô
+ex_intp = min(ex_band) : d_ex/scale : max(ex_band);     % EX²¨¶Î²åÖµ
+em_intp = min(em_band) : d_em/scale : max(em_band);     % EM²¨¶Î²åÖµ
 
-% æ„å»ºäºŒç»´çŸ©é˜µï¼šç»˜å›¾å’Œæ’å€¼ï¼ˆåŸå§‹å¤§å°ï¼‰
+% ¹¹½¨¶şÎ¬¾ØÕó£º»æÍ¼ºÍ²åÖµ£¨Ô­Ê¼´óĞ¡£©
 [EX_ori, EM_ori] = meshgrid(ex_band, em_band);
-% æ„å»ºäºŒç»´çŸ©é˜µï¼šç»˜å›¾å’Œæ’å€¼ï¼ˆåŸå§‹å¤§å°ï¼‰
+% ¹¹½¨¶şÎ¬¾ØÕó£º»æÍ¼ºÍ²åÖµ£¨Ô­Ê¼´óĞ¡£©
 [EX_intp, EM_intp] = meshgrid(ex_intp, em_intp);
 if scale ~=1
-    % äºŒç»´æ’å€¼
+    % ¶şÎ¬²åÖµ
     data = interp2(EX_ori, EM_ori, spec_data, EX_intp, EM_intp, 'spline');
 else
-    % è‹¥scale == 1ï¼Œ åˆ™ä¸æ”¹å˜æ•°æ®
+    % Èôscale == 1£¬ Ôò²»¸Ä±äÊı¾İ
     data = spec_data;
 end
 
 
-figure                                      % æ–°å»ºå›¾åƒ
-subplot(1, 2, 1)                            % å­å›¾1
-imagesc(ex_intp, em_intp, data)             % ç»˜åˆ¶äºŒç»´æ …æ ¼å›¾
-shading flat                                % å»é™¤ç½‘æ ¼çº¿
-set(gca, 'YDir', 'reverse')                 % å€’è½¬Yè½´ï¼Œä½¿æ˜¾ç¤ºä¸æ•°æ®æ–‡ä»¶ä¸€è‡´
-xlabel('EX')                                % Xè½´æ ‡ç­¾
-ylabel('EM')                                % Yè½´æ ‡ç­¾
-set(gca, 'FontSize', 18)                    % å¢å¤§å­—ä½“
+figure                                      % ĞÂ½¨Í¼Ïñ
+subplot(1, 2, 1)                            % ×ÓÍ¼1
+imagesc(ex_intp, em_intp, data)             % »æÖÆ¶şÎ¬Õ¤¸ñÍ¼
+shading flat                                % È¥³ıÍø¸ñÏß
+set(gca, 'YDir', 'reverse')                 % µ¹×ªYÖá£¬Ê¹ÏÔÊ¾ÓëÊı¾İÎÄ¼şÒ»ÖÂ
+xlabel('EX')                                % XÖá±êÇ©
+ylabel('EM')                                % YÖá±êÇ©
+set(gca, 'FontSize', 18)                    % Ôö´ó×ÖÌå
 
-subplot(1, 2, 2)                            % å­å›¾2
-surf(EX_intp, EM_intp, data+mean(data(:)))  % ä¸‰ç»´å›¾ï¼Œæ³¨æ„å›¾åƒåœ¨Zè½´æ–¹å‘æŠ¬å‡
-shading flat                                % åŒä¸Š
-hold on                                     % åŒä¸€å¼ å›¾ä¸ŠåŒæ—¶ç»˜åˆ¶äºŒç»´å’Œä¸‰ç»´
-contour(ex_intp, em_intp, data)             % ç»˜åˆ¶ç­‰é«˜çº¿
-xlabel('EX')                                % Xè½´æ ‡ç­¾
-ylabel('EM')                                % Yè½´æ ‡ç­¾
-set(gca, 'FontSize', 18)                    % å¢å¤§å­—ä½“
-colorbar                                    % é¢œè‰²å›¾ä¾‹
+subplot(1, 2, 2)                            % ×ÓÍ¼2
+surf(EX_intp, EM_intp, data+mean(data(:)))  % ÈıÎ¬Í¼£¬×¢ÒâÍ¼ÏñÔÚZÖá·½ÏòÌ§Éı
+shading flat                                % Í¬ÉÏ
+hold on                                     % Í¬Ò»ÕÅÍ¼ÉÏÍ¬Ê±»æÖÆ¶şÎ¬ºÍÈıÎ¬
+contour(ex_intp, em_intp, data)             % »æÖÆµÈ¸ßÏß
+xlabel('EX')                                % XÖá±êÇ©
+ylabel('EM')                                % YÖá±êÇ©
+set(gca, 'FontSize', 18)                    % Ôö´ó×ÖÌå
+colorbar                                    % ÑÕÉ«Í¼Àı

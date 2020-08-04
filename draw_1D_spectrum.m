@@ -1,21 +1,21 @@
 function [] = draw_1D_spectrum(spec_data)
-% ç»˜åˆ¶"æ‰€è°“"çš„ä¸€ç»´å…‰è°±å›¾
-% è¾“å…¥ï¼šspec_data = å…‰è°±å¼ºåº¦æ•°æ®
+% »æÖÆ"ËùÎ½"µÄÒ»Î¬¹âÆ×Í¼
+% ÊäÈë£ºspec_data = ¹âÆ×Ç¿¶ÈÊı¾İ
 
-data_em = reshape(spec_data, [1, numel(spec_data)]);    % å…ˆå˜EMï¼Œåå˜EX
-data_ex = reshape(spec_data', [1, numel(spec_data)]);   % å…ˆå˜EXï¼Œåå˜EM
+data_em = reshape(spec_data, [1, numel(spec_data)]);    % ÏÈ±äEM£¬ºó±äEX
+data_ex = reshape(spec_data', [1, numel(spec_data)]);   % ÏÈ±äEX£¬ºó±äEM
 
-figure;                     % æ–°å»ºå›¾åƒ
-subplot(1, 2, 1)            % å­å›¾1
-plot(data_ex)               % ç»˜åˆ¶EXæ³¢è°±
-set(gca, 'FontSize', 18)    % å¢å¤§å­—ä½“
-xlabel('æ•°æ®ç‚¹')             % Xè½´æ ‡ç­¾
-ylabel('ç›¸å¯¹è§å…‰å¼ºåº¦')        % Yè½´æ ‡ç­¾
-title('åŸå§‹è§å…‰è°±ï¼ˆEXï¼‰')      % æ ‡é¢˜
+figure;                     % ĞÂ½¨Í¼Ïñ
+subplot(1, 2, 1)            % ×ÓÍ¼1
+plot(data_ex)               % »æÖÆEX²¨Æ×
+set(gca, 'FontSize', 18)    % Ôö´ó×ÖÌå
+xlabel('Êı¾İµã')             % XÖá±êÇ©
+ylabel('Ïà¶ÔÓ«¹âÇ¿¶È')        % YÖá±êÇ©
+title('Ô­Ê¼Ó«¹âÆ×£¨EX£©')      % ±êÌâ
 
-subplot(1, 2, 2)            % å­å›¾2
-plot(data_em)               % ç»˜åˆ¶EMæ³¢è°±
-set(gca, 'FontSize', 18)    % å¢å¤§å­—ä½“
-xlabel('æ•°æ®ç‚¹')             % Xè½´æ ‡ç­¾
-ylabel('ç›¸å¯¹è§å…‰å¼ºåº¦')        % Yè½´æ ‡ç­¾
-title('åŸå§‹è§å…‰è°±ï¼ˆEMï¼‰')      % æ ‡é¢˜
+subplot(1, 2, 2)            % ×ÓÍ¼2
+plot(data_em)               % »æÖÆEM²¨Æ×
+set(gca, 'FontSize', 18)    % Ôö´ó×ÖÌå
+xlabel('Êı¾İµã')             % XÖá±êÇ©
+ylabel('Ïà¶ÔÓ«¹âÇ¿¶È')        % YÖá±êÇ©
+title('Ô­Ê¼Ó«¹âÆ×£¨EM£©')      % ±êÌâ

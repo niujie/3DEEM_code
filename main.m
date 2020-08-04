@@ -1,30 +1,30 @@
-% ä¸»ç¨‹åº
+% Ö÷³ÌĞò
 clear
 clc
-% 1. ä¿®æ”¹ä»¥ä¸‹æ–‡ä»¶è·¯å¾„åŠè¦æ‰“å¼€çš„æ–‡ä»¶åï¼ˆæœ€å¥½ä½¿ç”¨å…¨è·¯å¾„ï¼‰
-% æ–‡ä»¶è·¯å¾„
-% file_path = 'C:\Users\jay_n\Documents\å­¦ç”Ÿ\è‹Ÿå²é’°\interval10\non-toxic\Chlorophyta\P.subcordiformis\';
+% 1. ĞŞ¸ÄÒÔÏÂÎÄ¼şÂ·¾¶¼°Òª´ò¿ªµÄÎÄ¼şÃû£¨×îºÃÊ¹ÓÃÈ«Â·¾¶£©
+% ÎÄ¼şÂ·¾¶
+% file_path = 'C:\Users\jay_n\Documents\Ñ§Éú\¹¶‚ÆîÚ\interval10\non-toxic\Chlorophyta\P.subcordiformis\';
 % filename = [file_path, 'PS2.TXT'];
-file_path = 'C:\Users\jay_n\Documents\å­¦ç”Ÿ\æ›¹æ´èŒ¹\å…‰ç…§60\14-4-15\';
+file_path = 'C:\Users\jay_n\Documents\Ñ§Éú\²Ü½àÈã\¹âÕÕ60\14-4-15\';
 filename = [file_path, '311.TXT'];
 
-% ç»“æ„ä½“å˜é‡ï¼Œç”¨äºå­˜å‚¨æ–‡ä»¶ä¸­çš„æ•°æ®
-% åŒ…æ‹¬
+% ½á¹¹Ìå±äÁ¿£¬ÓÃÓÚ´æ´¢ÎÄ¼şÖĞµÄÊı¾İ
+% °üÀ¨
 % Sample
 % File name
 % ... ...
 % Data Points
 file_info = read_3DEEM_file(filename);
 
-% 2. ä»Data Pointsæ•°ç»„æå–æ•°æ®
-%   ex_band = æ¿€å‘æ³¢æ®µ
-%   em_band = å‘å°„æ³¢æ®µ
-% spec_band = æ³¢è°±æ•°æ®
+% 2. ´ÓData PointsÊı×éÌáÈ¡Êı¾İ
+%   ex_band = ¼¤·¢²¨¶Î
+%   em_band = ·¢Éä²¨¶Î
+% spec_band = ²¨Æ×Êı¾İ
 [ex_band, em_band, spec_data] = get_data_points(file_info.Data_Points);
 
-% 3. ç»˜åˆ¶ä¸‰ç»´å…‰è°±å›¾
-scale = 10;     % æ’å€¼ç²¾åº¦ï¼Œé»˜è®¤ä¸º1ï¼Œå³ä¸æ’å€¼
+% 3. »æÖÆÈıÎ¬¹âÆ×Í¼
+scale = 10;     % ²åÖµ¾«¶È£¬Ä¬ÈÏÎª1£¬¼´²»²åÖµ
 draw_3D_spectrum(ex_band, em_band, spec_data, scale)
 
-% 4. ç»˜åˆ¶"æ‰€è°“"çš„ä¸€ç»´å…‰è°±å›¾
+% 4. »æÖÆ"ËùÎ½"µÄÒ»Î¬¹âÆ×Í¼
 draw_1D_spectrum(spec_data)

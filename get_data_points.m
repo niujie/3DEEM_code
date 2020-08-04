@@ -1,18 +1,18 @@
 function [ex_band, em_band, spec_data] = get_data_points(data_pts)
-% ä»Data Pointsæ•°ç»„æå–æ•°æ®
-% è¾“å…¥ï¼š data_pts = å…‰è°±æ•°æ®æ–‡ä»¶ä¸­çš„Data Points, file_info.Data_Points
-% è¾“å‡ºï¼š  ex_band = æ¿€å‘æ³¢æ®µ
-%        em_band = å‘å°„æ³¢æ®µ
-%      spec_band = æ³¢è°±æ•°æ®
+% ´ÓData PointsÊı×éÌáÈ¡Êı¾İ
+% ÊäÈë£º data_pts = ¹âÆ×Êı¾İÎÄ¼şÖĞµÄData Points, file_info.Data_Points
+% Êä³ö£º  ex_band = ¼¤·¢²¨¶Î
+%        em_band = ·¢Éä²¨¶Î
+%      spec_band = ²¨Æ×Êı¾İ
 
-% æå–æ¿€å‘æ³¢æ®µ
+% ÌáÈ¡¼¤·¢²¨¶Î
 ex_band = data_pts(1, :);
-% å»é™¤NaN
+% È¥³ıNaN
 ex_band(isnan(ex_band)) = [];
 
-% æå–å‘å°„æ³¢æ®µ
+% ÌáÈ¡·¢Éä²¨¶Î
 em_band = data_pts(2:end, 1);
-em_band = em_band';     % è½¬ç½®
+em_band = em_band';     % ×ªÖÃ
 
-% æå–æ³¢è°±æ•°æ®
+% ÌáÈ¡²¨Æ×Êı¾İ
 spec_data = data_pts(2:end, 2:end);
