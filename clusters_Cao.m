@@ -1,10 +1,10 @@
 %% read in non-toxic data
-[non_toxic_data, non_toxic_files] = read_data('./曹分类后原数据/non_toxic/');
+[non_toxic_data, non_toxic_files] = read_data('../3DEEM_DATA/曹分类后原数据/non_toxic/');
 non_toxic_data = remove_scatter(non_toxic_data);
 % plot_verification(non_toxic_data, non_toxic_files);
 
 %% read in toxic data
-[toxic_data, toxic_data_files] = read_data('./曹分类后原数据/toxic/');
+[toxic_data, toxic_data_files] = read_data('../3DEEM_DATA/曹分类后原数据/toxic/');
 toxic_data = remove_scatter(toxic_data);
 % plot_verification(toxic_data, toxic_data_files);
 

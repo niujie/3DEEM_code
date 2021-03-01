@@ -1,4 +1,4 @@
-function [RemoveRay_data,data] = RemoveRay(ex_band,em_band,spec_data,scale)
+function [removeRay_data, data] = RemoveRay(ex_band, em_band, spec_data, scale)
 % Remove Rayleigh scattering, change the value to NaN
 % Mainly for EX = 500nm beyond 
 for i = 1 : 4    % EM, 650-680nm
@@ -22,7 +22,7 @@ end
 [X, Y] = meshgrid(ex_band, em_band);    % 构建二维矩阵
 idxgood = ~isnan(spec_data);    % 非NaN
 intp = scatteredInterpolant(X(idxgood), Y(idxgood), spec_data(idxgood));
-RemoveRay_data = intp(X, Y);
+removeRay_data = intp(X, Y);
  
 % 函数绘制光谱图
 % 输入：  ex_band = 激发波段
@@ -45,10 +45,10 @@ em_intp = min(em_band) : d_em/scale : max(em_band);     % EM波段插值
 [EX_intp, EM_intp] = meshgrid(ex_intp, em_intp);
 if scale ~=1
     % 二维插值
-    data = interp2(EX_ori, EM_ori,RemoveRay_data,EX_intp, EM_intp,'spline');
+    data = interp2(EX_ori, EM_ori,removeRay_data,EX_intp, EM_intp,'spline');
 else
     % 若scale == 1， 则不改变数据
-    data = RemoveRay_data;
+    data = removeRay_data;
 end
 
 
