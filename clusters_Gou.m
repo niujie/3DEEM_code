@@ -1,14 +1,30 @@
 %% non-toxic data
 [non_toxic_ex_bands, non_toxic_em_bands, ...
     non_toxic_data, non_toxic_files] = read_data('../3DEEM_DATA/苟原数据/non_toxic/');
-plot_verification(non_toxic_ex_bands, non_toxic_em_bands, non_toxic_data, non_toxic_files);
+% plot_verification(non_toxic_ex_bands, non_toxic_em_bands, non_toxic_data, non_toxic_files);
 
 
 %% toxic data
 [toxic_ex_bands, toxic_em_bands, ...
     toxic_data, toxic_files] = read_data('../3DEEM_DATA/苟原数据/toxic/');
-plot_verification(toxic_ex_bands, toxic_em_bands, toxic_data, toxic_files);
+% plot_verification(toxic_ex_bands, toxic_em_bands, toxic_data, toxic_files);
 
+
+%% merge all data
+data = cat(3, non_toxic_data, toxic_data);
+ex_bands = [non_toxic_ex_bands; toxic_ex_bands];
+em_bands = [non_toxic_em_bands; toxic_em_bands];
+
+% normalize
+for i = 1 : size(data, 3)
+    temp = data(:, :, i);
+    data(:, :, i) = (temp - min(temp(:))) / (max(temp(:)) - min(temp(:)));
+end
+
+% reshape to 2D array
+data2D = reshape(data, [size(data, 1) * size(data, 2), size(data, 3)]);
+% now row for samples
+data2D = data2D';
 
 %%
 function [ex_bands, em_bands, data, files] = read_data(path)
