@@ -30,7 +30,8 @@ end
 
 figure                                      % 新建图像
 subplot(1, 2, 1)                            % 子图1
-imagesc(ex_intp, em_intp, data)             % 绘制二维栅格图
+% imagesc(ex_intp, em_intp, data)             % 绘制二维栅格图
+contour(ex_intp, em_intp, data, 20)         % 绘制20条等高线
 shading flat                                % 去除网格线
 set(gca, 'YDir', 'reverse')                 % 倒转Y轴，使显示与数据文件一致
 xlabel('EX')                                % X轴标签
