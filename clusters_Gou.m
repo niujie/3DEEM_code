@@ -3,26 +3,30 @@
     non_toxic_data, non_toxic_files] = read_data('../3DEEM_DATA/苟原数据/non_toxic/');
 % plot_verification(non_toxic_ex_bands, non_toxic_em_bands, non_toxic_data, non_toxic_files);
 
+n_non_toxic_samples = size(non_toxic_data, 3);  % number of non-toxic data samples
 
 %% toxic data
 [toxic_ex_bands, toxic_em_bands, ...
     toxic_data, toxic_files] = read_data('../3DEEM_DATA/苟原数据/toxic/');
 % plot_verification(toxic_ex_bands, toxic_em_bands, toxic_data, toxic_files);
 
+n_toxic_samples = size(toxic_data, 3);  % number of toxic data samples
 
 %% merge all data
 data = cat(3, non_toxic_data, toxic_data);
 ex_bands = [non_toxic_ex_bands; toxic_ex_bands];
 em_bands = [non_toxic_em_bands; toxic_em_bands];
+n_samples = size(data, 3);  % number of data samples
+assert(n_samples == n_non_toxic_samples + n_toxic_samples)  % assert if the number of samples is correct
 
-% normalize
-for i = 1 : size(data, 3)
+%% normalize
+for i = 1 : n_samples
     temp = data(:, :, i);
     data(:, :, i) = (temp - min(temp(:))) / (max(temp(:)) - min(temp(:)));
 end
 
 %% reshape to 2D array
-data2D = reshape(data, [size(data, 1) * size(data, 2), size(data, 3)]);
+data2D = reshape(data, [size(data, 1) * size(data, 2), n_samples]);
 % now row for samples
 data2D = data2D';
 
@@ -31,11 +35,11 @@ data2D = data2D';
 % targets = zeros(size(data2D, 1), 2);
 % % toxic = 1
 % targets(size(non_toxic_data, 3) + 1 : end, 2) = 1;
-targets = zeros(size(data2D, 1), 1);
-targets(size(non_toxic_data, 3) + 1 : end) = 1;
+targets = zeros(n_samples, 1);
+targets(n_non_toxic_samples + 1 : end) = 1;
 
 %% random sample
-ind = randsample(1 : size(data2D, 1), size(data2D, 1));
+ind = randsample(1 : n_samples, n_samples);
 data = data(:, :, ind);
 data2D = data2D(ind, :);
 targets = targets(ind, :);
@@ -43,14 +47,14 @@ targets = targets(ind, :);
 
 %% neural network
 % create 4D array for image network training
-dataset = zeros(11, 21, 1, size(data,3));
-for i=1:138, dataset(:,:,1,i) = data(:,:,i); end
+dataset = zeros(size(data,1), size(data,2), 1, n_samples);
+for i = 1 : n_samples, dataset(:,:,1,i) = data(:,:,i); end
 
 % create categorical for network training
 Y = categorical(targets);
 
-train_ind = 1 : round(0.7 * size(data,3));   % training data indices
-valid_ind = train_ind(end) + 1 : size(data, 3); % validation data indices
+train_ind = 1 : round(0.6 * n_samples);   % training data indices
+valid_ind = train_ind(end) + 1 : n_samples; % validation data indices
 trainX = dataset(:,:,:,train_ind);
 trainY = Y(train_ind);
 validX = dataset(:,:,:,valid_ind);
