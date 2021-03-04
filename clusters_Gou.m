@@ -1,29 +1,30 @@
 %% non-toxic data
 [non_toxic_ex_bands, non_toxic_em_bands, ...
     non_toxic_data, non_toxic_files] = read_data('../3DEEM_DATA/苟原数据/non_toxic/');
-% plot_verification(non_toxic_ex_bands, non_toxic_em_bands, non_toxic_data, non_toxic_files);
+plot_verification(non_toxic_ex_bands, non_toxic_em_bands, non_toxic_data, non_toxic_files);
 
-n_non_toxic_samples = size(non_toxic_data, 3);  % number of non-toxic data samples
 
 %% toxic data
 [toxic_ex_bands, toxic_em_bands, ...
     toxic_data, toxic_files] = read_data('../3DEEM_DATA/苟原数据/toxic/');
 % plot_verification(toxic_ex_bands, toxic_em_bands, toxic_data, toxic_files);
 
-n_toxic_samples = size(toxic_data, 3);  % number of toxic data samples
 
 %% merge all data
 data = cat(3, non_toxic_data, toxic_data);
 ex_bands = [non_toxic_ex_bands; toxic_ex_bands];
 em_bands = [non_toxic_em_bands; toxic_em_bands];
+
+n_non_toxic_samples = size(non_toxic_data, 3);  % number of non-toxic data samples
+n_toxic_samples = size(toxic_data, 3);  % number of toxic data samples
 n_samples = size(data, 3);  % number of data samples
 assert(n_samples == n_non_toxic_samples + n_toxic_samples)  % assert if the number of samples is correct
 
-%% normalize
-for i = 1 : n_samples
-    temp = data(:, :, i);
-    data(:, :, i) = (temp - min(temp(:))) / (max(temp(:)) - min(temp(:)));
-end
+%% normalize - not necessary
+% for i = 1 : n_samples
+%     temp = data(:, :, i);
+%     data(:, :, i) = (temp - min(temp(:))) / (max(temp(:)) - min(temp(:)));
+% end
 
 %% reshape to 2D array
 data2D = reshape(data, [size(data, 1) * size(data, 2), n_samples]);
@@ -38,8 +39,8 @@ data2D = data2D';
 targets = zeros(n_samples, 1);
 targets(n_non_toxic_samples + 1 : end) = 1;
 
-%% random sample
-ind = randsample(1 : n_samples, n_samples);
+%% random permutation
+ind = randperm(n_samples);
 data = data(:, :, ind);
 data2D = data2D(ind, :);
 targets = targets(ind, :);
@@ -53,7 +54,8 @@ for i = 1 : n_samples, dataset(:,:,1,i) = data(:,:,i); end
 % create categorical for network training
 Y = categorical(targets);
 
-train_ind = 1 : round(0.6 * n_samples);   % training data indices
+train_ratio = 0.6;      % traning set ratio
+train_ind = 1 : round(train_ratio * n_samples);   % training data indices
 valid_ind = train_ind(end) + 1 : n_samples; % validation data indices
 trainX = dataset(:,:,:,train_ind);
 trainY = Y(train_ind);
@@ -62,16 +64,30 @@ validY = Y(valid_ind);
 
 %% train network
 layers = [
-    imageInputLayer([11 21 1], "Name", "imageinput")
-    batchNormalizationLayer("Name", "batchnorm")
-    fullyConnectedLayer(20, "Name", "fc_1")
-    dropoutLayer(0.5, "Name", "dropout")
-    fullyConnectedLayer(2, "Name", "fc_2")
-    softmaxLayer("Name", "softmax")
-    classificationLayer("Name", "classoutput")];
+    imageInputLayer([11 21 1],"Name","imageinput")
+    
+    convolution2dLayer([3 3],8,"Name","conv_1","Padding","same")
+    batchNormalizationLayer("Name","batchnorm_1")
+    reluLayer("Name","relu_1")
+    
+    maxPooling2dLayer([2 2],"Name","maxpool_1","Padding","same","Stride",[2 2])
+    
+    convolution2dLayer([3 3],16,"Name","conv_2","Padding","same")
+    batchNormalizationLayer("Name","batchnorm_2")
+    reluLayer("Name","relu_2")
+    
+    maxPooling2dLayer([2 2],"Name","maxpool_2","Padding","same","Stride",[2 2])
+    
+    convolution2dLayer([3 3],32,"Name","conv_3","Padding","same")
+    batchNormalizationLayer("Name","batchnorm_3")
+    reluLayer("Name","relu_3")
+        
+    fullyConnectedLayer(2,"Name","fc")
+    softmaxLayer("Name","softmax")
+    classificationLayer("Name","classoutput")];
 
 options = trainingOptions('adam', ...
-    'ExecutionEnvironment', 'cpu', ...
+    'ExecutionEnvironment', 'gpu', ...
     'MaxEpochs', 100, ...
     'MiniBatchSize', 10, ...
     'ValidationData', {validX, validY}, ...
